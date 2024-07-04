@@ -2,61 +2,22 @@
 #include <Wire.h>
 #include "MPU6050_driver.h"
 
-MPU6050 imu;
+/*
+NOTE:
+======
+Only RTC IO can be used as a source for external wake
+source. They are pins: 0,2,4,12-15,25-27,32-39.
 
-//Only RTC IO can be used as a source for external wake
-//source. They are pins: 0,2,4,12-15,25-27,32-39.
+Author:
+Pranav Cherukupalli <cherukupallip@gmail.com>
+*/
 
-RTC_DATA_ATTR int bootCount = 0;    //This counter persist in sleep mode
+#define BUTTON_PIN_BITMASK 0x200000000 // 2^33 in hex
 
+RTC_DATA_ATTR int bootCount = 0;
 
-
-void setup(){
-  initSystem();
-}
-
-
-void loop(){
-  Serial.println("This will never be printed");
-}
-
-
-
-
-
-
-
-void initSystem(){
-  Serial.begin(115200);
-  Wire.begin();
-  delay(500); //Take some time to open up the Serial Monitor
-
-  
-  Serial.println("AWAKE!!!");
-  ++bootCount;//Increment boot number and print it every reboot
-  Serial.println("Boot number: " + String(bootCount));
-  //print_wakeup_reason();
-  imu.begin(MPU6050_RANGE_SLEEP,MPU6050_RANGE_500_DEG);
-  //imu.setAccelRange(MPU6050_RANGE_SLEEP);
-  //imu.setGyroRange(MPU6050_RANGE_500_DEG);
-  imu.setInterrupts();
-  //imu.setupMotion();
-  sleepNow();
-
-}
-
-
-void sleepNow(){
-  Serial.println("Sleeping");
-  //esp_sleep_enable_ext0_wakeup(GPIO_NUM_33,0);//1 = RISING_EDGE, 0 = FALLING_EDGE
-  delay(1500);
-  esp_deep_sleep_start(); //Start sleep until interruption
-  Serial.println("This will never be printed");
-}
-
-
-
-
+void initSystem();
+void print_wakeup_reason();
 
 /*
 Method to print the reason by which ESP32
@@ -75,4 +36,46 @@ void print_wakeup_reason(){
     case ESP_SLEEP_WAKEUP_ULP : Serial.println("Wakeup caused by ULP program"); break;
     default : Serial.printf("Wakeup was not caused by deep sleep: %d\n",wakeup_reason); break;
   }
+}
+
+void setup(){
+  initSystem();
+}
+
+
+void initSystem(){
+  Serial.begin(115200);
+  delay(1000); //Take some time to open up the Serial Monitor
+
+  //Increment boot number and print it every reboot
+  ++bootCount;
+  Serial.println("Boot number: " + String(bootCount));
+
+  //Print the wakeup reason for ESP32
+  print_wakeup_reason();
+
+  /*
+  First we configure the wake up source
+  We set our ESP32 to wake up for an external trigger.
+  There are two types for ESP32, ext0 and ext1 .
+  ext0 uses RTC_IO to wakeup thus requires RTC peripherals
+  to be on while ext1 uses RTC Controller so doesnt need
+  peripherals to be powered on.
+  Note that using internal pullups/pulldowns also requires
+  RTC peripherals to be turned on.
+  */
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_33,1); //1 = High, 0 = Low
+
+  //If you were to use ext1, you would use it like
+  //esp_sleep_enable_ext1_wakeup(BUTTON_PIN_BITMASK,ESP_EXT1_WAKEUP_ANY_HIGH);
+
+  //Go to sleep now
+  Serial.println("Going to sleep now");
+  delay(1000);
+  esp_deep_sleep_start();
+  Serial.println("This will never be printed");
+}
+
+void loop(){
+  //This is not going to be called
 }
