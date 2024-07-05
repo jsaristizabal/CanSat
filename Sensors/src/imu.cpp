@@ -11,38 +11,49 @@ void MPU6050::begin(){
   Wire.endTransmission();
 }
 
-void MPU6050::readAccelData(float* accelData){
+const float* MPU6050::readAccelData(){
   int16_t rawData[3];
+  
   rawAccelData(rawData);
 
   accelData[0] = rawData[0] / 2048.0  +0.02;
   accelData[1] = rawData[1] / 2048.0  -0.01;
   accelData[2] = rawData[2] / 2048.0  -0.08;
+  
+  return accelData;
 }
 
-void MPU6050::readGyroData(float* gyroData){
+const float* MPU6050::readGyroData(){
   int16_t rawData[3];
   rawGyroData(rawData);
 
   gyroData[0] = rawData[0] / 65.5;
   gyroData[1] = rawData[1] / 65.5;
   gyroData[2] = rawData[2] / 65.5;
+
+  return gyroData;
 }
 
-void MPU6050::calculateAngle(float* anglesData, float* accelData){
+const float* MPU6050::calculateAngle(const float* accelData){
+
   anglesData[0]   = atan(accelData[1] / sqrt(accelData[0]*accelData[0] + accelData[2]*accelData[2])) * 1/(3.142/180);   //angleRoll
   anglesData[1]   = atan(-accelData[0] / sqrt(accelData[1]*accelData[1] + accelData[2]*accelData[2])) * 1/(3.142/180);  //anglePitch
   anglesData[2]   = atan(sqrt(accelData[0]*accelData[0] + accelData[1]*accelData[1]) / accelData[2] ) * 1/(3.142/180);  //angleYaw
+  
+  return anglesData;
 }
 
 
 
 
-void MPU6050::readTempData(float* tempData){
+float MPU6050::readTempData(){
   uint8_t rawData[2];
+
   readRegisters(MPU6050_TEMP_XOUT_H_REG, 2, rawData);
   int16_t rawTemp = ((int16_t)rawData[0] << 8) | rawData[1];
-  *tempData = (rawTemp/340.0) +36.53;
+  //tempData = (rawTemp/340.0) +36.53;
+  
+  return tempData;
 }
 
 
@@ -56,7 +67,7 @@ void MPU6050::writeRegister(uint8_t reg,uint8_t data){
 void MPU6050::calibration(float * rateCalibrationArray){
   //float rateCalibrationRoll, rateCalibrationPitch, rateCalibrationYaw;
   int rateCalibrationNumber;
-  float accelData[3];
+  //const float* accelData[3] = readAccelData();
   float gyroData[3];
   float anglesData[3];
   //begin();
@@ -66,9 +77,9 @@ void MPU6050::calibration(float * rateCalibrationArray){
   for(rateCalibrationNumber = 0; rateCalibrationNumber < 2000; rateCalibrationNumber++){
 
     //read data
-    readAccelData(accelData);
-    readGyroData(gyroData);
-    calculateAngle(anglesData, accelData);
+  
+    //readGyroData(gyroData);
+    //calculateAngle(anglesData, accelData);
 
     //rateCalibrationRoll   += gyroData[0];
   //  rateCalibrationPitch  += gyroData[1];
@@ -92,11 +103,9 @@ void MPU6050::calibration(float * rateCalibrationArray){
   rateCalibrationArray[2] /= 2000;
 }
 
-void MPU6050::printAccel(){
-  float accelData[3];
+void MPU6050::printAccelData(){
   
-  readAccelData(accelData);
-
+  const float* accelData = readAccelData();
   Serial.print("aX: ");
   Serial.print(accelData[0]);
   Serial.print("(g)");
@@ -106,13 +115,11 @@ void MPU6050::printAccel(){
   Serial.print(", aZ: ");
   Serial.print(accelData[2]);
   Serial.print("(g)");
-  Serial.println();
 }
 
-void MPU6050::printGyro(){
-  float gyroData[3];
-  
-  readGyroData(gyroData);
+void MPU6050::printGyroData(){
+
+  const float* gyroData = readGyroData();
 
   Serial.print("GyroX: ");
   Serial.print(gyroData[0]);
@@ -123,17 +130,43 @@ void MPU6050::printGyro(){
   Serial.print(", GyroZ: ");
   Serial.print(gyroData[2]);
   Serial.print("(°/s) ");
-  Serial.println();
 }
 
-void MPU6050::printTemp(){
+void MPU6050::printTempData(){
   float temp = 0;
-  readTempData(&temp);
+  //readTempData(temp);
   Serial.print("Temp: ");
   Serial.print(temp);
-  Serial.println("°C");
+  Serial.print("°C");
 }
 
+
+void MPU6050::printAnglesData(const float* accelData){
+
+  const float* anglesData = calculateAngle(accelData);
+
+  Serial.print("Roll angle: ");
+  Serial.print(anglesData[0]);
+  Serial.print("°, Pitch angle: ");
+  Serial.print(anglesData[1]);
+  Serial.print("°, Yaw angle: ");
+  Serial.print(anglesData[2]);
+  Serial.print("°");
+}
+
+void MPU6050::printAllData(){
+  const float* accelData = readAccelData();
+
+  Serial.println();
+  printAccelData();
+  Serial.println();
+  printGyroData();
+  Serial.println();
+  printTempData();
+  Serial.println();
+  printAnglesData(accelData);
+  Serial.println();
+}
 
 
 

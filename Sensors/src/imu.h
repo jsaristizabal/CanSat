@@ -122,15 +122,16 @@ class MPU6050{
     MPU6050();
     void begin();
     void calibration(float* rateCalibrationArray);
-    void readAccelData(float* accelData);
-    void readGyroData(float* gyroData);
-    void readTempData(float* tempData);
-    void calculateAngle(float* anglesData,  float* accelData);
+    const float* readAccelData();
+    const float* readGyroData();
+    float readTempData();
+    const float* calculateAngle(const float* accelData);
 
-    void printAccel();
-    void printGyro();
-    void printTemp();
-    void printAll();
+    void printAccelData();
+    void printGyroData();
+    void printTempData();
+    void printAnglesData(const float* accelData);
+    void printAllData();
     void reset();
 
     //accel_range_t getAccelRange(void);
@@ -147,6 +148,10 @@ class MPU6050{
 
 
   private:
+    float accelData[3]; // Arreglo estático miembro de la clase
+    float gyroData[3]; // Arreglo estático miembro de la clase
+    float anglesData[3]; // Arreglo estático miembro de la clase
+    float tempData; // Arreglo estático miembro de la clase
     void rawGyroData(int16_t* gyroData);
     void rawAccelData(int16_t* gyroData);
     void writeRegister(uint8_t reg, uint8_t data);

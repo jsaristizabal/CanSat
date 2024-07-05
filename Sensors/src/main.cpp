@@ -25,61 +25,15 @@ void setup() {
 
 void loop() {
   //dht.printData();
-  float accelData[3];
-  float gyroData[3];
-  float anglesData[3];
-  float temp = 0;
-  imu.readAccelData(accelData);
-  imu.readGyroData(gyroData);
-  imu.readTempData(&temp);
-
-  gyroData[0] -= calibArray[0];
-  gyroData[1] -= calibArray[1];
-  gyroData[2] -= calibArray[2];
-
-  imu.calculateAngle(anglesData, accelData);
+  // const float* accelData = imu.readAccelData();
+  // const float* gyroData = imu.readGyroData();
+  // float tempData = imu.readTempData();
 
 
-  Serial.print("aX: ");
-  Serial.print(accelData[0]);
-  Serial.print("(g)");
-  Serial.print(", aY: ");
-  Serial.print(accelData[1]);
-  Serial.print("(g)");
-  Serial.print(", aZ: ");
-  Serial.print(accelData[2]);
-  Serial.print("(g)");
-  
-  Serial.print("    |   ");
+  imu.printAllData();
+  Serial.println();
 
-  Serial.print("GyroX: ");
-  Serial.print(gyroData[0]);
-  Serial.print("(°/s) ");
-  Serial.print(", GyroY: ");
-  Serial.print(gyroData[1]);
-  Serial.print("(°/s) ");
-  Serial.print(", GyroZ: ");
-  Serial.print(gyroData[2]);
-  Serial.print("(°/s) ");
-  
-  Serial.print("    |   ");
-
-  
-  Serial.print("Temp: ");
-  Serial.print(temp);
-  Serial.println("°C");
-
-  Serial.print("Roll angle [°]=");
-  Serial.print(anglesData[0]);
-  Serial.print("Pitch angle [°]=");
-  Serial.print(anglesData[1]);
-  Serial.print("Yaw angle [°]=");
-  Serial.println(anglesData[2]);
-  //dht.printData();
-
-  
-
-  delay(150);
+  delay(200);
 }
 
 // put function definitions here:
@@ -90,6 +44,8 @@ void beginSensors(){
   imu.begin();
   imu.setAccelRange(MPU6050_RANGE_16_G);
   imu.setGyroRange(MPU6050_RANGE_500_DEG);
+  
+  
   delay(200);
-  imu.calibration(calibArray);
+  //imu.calibration(calibArray);
 }
