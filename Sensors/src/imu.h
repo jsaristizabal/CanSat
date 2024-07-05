@@ -6,7 +6,7 @@
 
 
 #define PWR_MGMT_1                    0x6b
-#define CONFIG_REG                        0x1A
+#define CONFIG_REG                    0x1A
 
 
 
@@ -127,11 +127,11 @@ class MPU6050{
     void readTempData(float* tempData);
     void calculateAngle(float* anglesData,  float* accelData);
 
-    void printAccel(void);
-    void printGyro(void);
-    void printTemp(void);
-    void printAll(void);
-    void reset(void);
+    void printAccel();
+    void printGyro();
+    void printTemp();
+    void printAll();
+    void reset();
 
     //accel_range_t getAccelRange(void);
     void setAccelRange(mpu6050_accel_range_t);

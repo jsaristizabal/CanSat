@@ -17,8 +17,8 @@ public:
     void printData();
 
 private:
-    DHT_Unified dht;
-    uint32_t delayMS;
+    DHT_Unified dht; //dht sensor object
+    uint32_t delayMS;   //delay between readings
 };
 
 #endif

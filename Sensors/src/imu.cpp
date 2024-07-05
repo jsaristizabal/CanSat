@@ -92,6 +92,50 @@ void MPU6050::calibration(float * rateCalibrationArray){
   rateCalibrationArray[2] /= 2000;
 }
 
+void MPU6050::printAccel(){
+  float accelData[3];
+  
+  readAccelData(accelData);
+
+  Serial.print("aX: ");
+  Serial.print(accelData[0]);
+  Serial.print("(g)");
+  Serial.print(", aY: ");
+  Serial.print(accelData[1]);
+  Serial.print("(g)");
+  Serial.print(", aZ: ");
+  Serial.print(accelData[2]);
+  Serial.print("(g)");
+  Serial.println();
+}
+
+void MPU6050::printGyro(){
+  float gyroData[3];
+  
+  readGyroData(gyroData);
+
+  Serial.print("GyroX: ");
+  Serial.print(gyroData[0]);
+  Serial.print("(°/s) ");
+  Serial.print(", GyroY: ");
+  Serial.print(gyroData[1]);
+  Serial.print("(°/s) ");
+  Serial.print(", GyroZ: ");
+  Serial.print(gyroData[2]);
+  Serial.print("(°/s) ");
+  Serial.println();
+}
+
+void MPU6050::printTemp(){
+  float temp = 0;
+  readTempData(&temp);
+  Serial.print("Temp: ");
+  Serial.print(temp);
+  Serial.println("°C");
+}
+
+
+
 
 
 void MPU6050::readRegisters(uint8_t reg, uint8_t count, uint8_t* data){
