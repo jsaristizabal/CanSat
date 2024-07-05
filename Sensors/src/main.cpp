@@ -21,17 +21,21 @@ void setup() {
   Wire.begin();
   Serial.begin(115200);
   beginSensors();
+  imu.calibration();
+  delay(100);
+  imu.printGyroData();
+  
 }
 
 void loop() {
   //dht.printData();
+  imu.printAllData();
   // const float* accelData = imu.readAccelData();
-  // const float* gyroData = imu.readGyroData();
   // float tempData = imu.readTempData();
 
 
-  imu.printAllData();
-  Serial.println();
+  //imu.printAllData();
+  
 
   delay(200);
 }
