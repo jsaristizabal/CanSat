@@ -59,12 +59,15 @@ void MPU6050::calibration(){
   
   int rateCalibrationNumber;
 
+  Serial.println("Calibration started, please do not move the sensor.");
+  /*
   Serial.println("INITIAL Calibration values: ");
   Serial.print(rateCalibrationArray[0]);
   Serial.print(" , ");
   Serial.print(rateCalibrationArray[1]);
   Serial.print(" , ");
   Serial.print(rateCalibrationArray[2]);
+  */
 
   for(rateCalibrationNumber = 0; rateCalibrationNumber < 2000; rateCalibrationNumber++){
     
@@ -80,7 +83,10 @@ void MPU6050::calibration(){
   rateCalibrationArray[0] /= 2000;
   rateCalibrationArray[1] /= 2000;
   rateCalibrationArray[2] /= 2000;
+
+  Serial.println("Calibration finished!");
   
+  /*
   Serial.println();
   Serial.println("FINAL Calibration values: ");
   Serial.print(rateCalibrationArray[0]);
@@ -89,6 +95,7 @@ void MPU6050::calibration(){
   Serial.print(" , ");
   Serial.print(rateCalibrationArray[2]);
   Serial.println();
+  */
 }
 
 
