@@ -40,9 +40,9 @@ void loop() {
   gyroY = (int16_t)(buffer[3] << 8 | buffer[2]); // Leer los 2 bytes de datos del giroscopio en Y
   gyroZ = (int16_t)(buffer[5] << 8 | buffer[4]); // Leer los 2 bytes de datos del giroscopio en Z
 
-  dpsX = gyroX * GYRO_SCALE; // Convertir a grados por segundo
-  dpsY = gyroY * GYRO_SCALE;
-  dpsZ = gyroZ * GYRO_SCALE;
+  dpsX = gyroX;// * GYRO_SCALE; // Convertir a grados por segundo
+  dpsY = gyroY;// * GYRO_SCALE;
+  dpsZ = gyroZ;// * GYRO_SCALE;
 
   Serial.print("X: ");
   Serial.print(dpsX);
@@ -51,5 +51,5 @@ void loop() {
   Serial.print(" dps, Z: ");
   Serial.println(dpsZ);
   
-  delay(1000);
+  delay(100);
 }

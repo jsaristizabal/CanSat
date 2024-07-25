@@ -76,8 +76,8 @@ class GY89 {
 
     void begin();
     const float* getAccel();
-    const float* getMag(float magData[4]);
-    void getGyro(float gyroData[3]);
+    const float* getMag();
+    void getGyro();
     const float* calculateAngles(const float* accelData);
 
     void printAccel();

@@ -24,13 +24,13 @@ void loop() {
 
   Serial.println();
   Serial.print("aX: ");
-  // Serial.print(anglesData[0]);
+  Serial.print(accelData[0]);
   Serial.print("(g)");
   Serial.print("\t aY: ");
-  // Serial.print(anglesData[1]);
+  Serial.print(accelData[1]);
   Serial.print("(g)");
   Serial.print("\t aZ: ");
-  // Serial.print(anglesData[2]);
+  Serial.print(accelData[2]);
   Serial.println("(g)");
   // Serial.print("Geografico: ");
   // Serial.print(magData[3]);

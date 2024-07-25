@@ -16,10 +16,9 @@ void GY89::setAccelRange(LSM303D_accel_range_t range){
   
   uint8_t regValue = readRegister(LSM303D_ADDRESS, CTRL2_REG); //read register value
   regValue &= ~ACCEL_SCALE_MSK; //clear register bits
-  Serial.println(range);
-  Serial.println(regValue);
+
   regValue |= range;          //set scale
-  Serial.println(regValue);
+
   writeRegister(LSM303D_ADDRESS, CTRL2_REG, regValue); //write the scale value
    switch (range) {
     case LSM303D_RANGE_2_G:
@@ -75,7 +74,7 @@ void GY89::setGyroRange(L3GD20H_gyro_range_t range){
 
     switch (range){
     case L3GD20H_RANGE_245_DEG:
-      gyroLSB = 875 / 1000; // mdps/digit
+      gyroLSB = 8.75 / 1000; // mdps/digit
       break;
     case L3GD20H_RANGE_500_DEG:
       gyroLSB = 17.5 / 1000; // mdps/digit
@@ -100,13 +99,15 @@ const float* GY89::getAccel(){
   return accelData;
 }
 
-const float* GY89::getMag(float magData[4]){
-  uint16_t rawData[4];
-
-  magData[0] = magData[0] * magLSB;
-  magData[1] = magData[1] * magLSB;
-  magData[2] = magData[2] * magLSB;
+const float* GY89::getMag(){
+  int16_t rawData[4];
+  rawMagData(rawData);
+  
+  magData[0] = rawData[0] * magLSB;
+  magData[1] = rawData[1] * magLSB;
+  magData[2] = rawData[2] * magLSB;
   magData[3] = (atan2(magData[1],magData[0]) * (180/PI)) + MED_MAG_DECLINATION;   //direction of the geographic north pole
+  
   if (magData[3] > 360){
     magData[3] = magData[3] + 360;
   }
@@ -114,18 +115,24 @@ const float* GY89::getMag(float magData[4]){
   return magData;
 }
 
-void GY89::getGyro(float gyroData[3]){
-  uint8_t rawData[6];
-  readRegisters(LSM303D_ADDRESS, GYRO_XOUT_REG |0x80, 6, rawData);// 0x80 mask indicates data lecture
-  gyroData[0] = (int16_t)(rawData[1] << 8) | rawData[0];
-  gyroData[1] = (int16_t)(rawData[3] << 8) | rawData[2];
-  gyroData[2] = (int16_t)(rawData[5] << 8) | rawData[4];
+void GY89::getGyro(){
+  int16_t rawData[3];
+  rawGyroData(rawData);
+  gyroData[0] = rawData[0] * gyroLSB;
+  gyroData[1] = rawData[1] * gyroLSB;
+  gyroData[2] = rawData[2] * gyroLSB;
+  
 
-  gyroData[0] = gyroData[0] * gyroLSB;
-  gyroData[1] = gyroData[1] * gyroLSB;
-  gyroData[2] = gyroData[2] * gyroLSB;
+  Serial.print(gyroData[0]);
+  Serial.print("\t");
+  Serial.print(gyroData[1]);
+  Serial.print("\t");
+  Serial.println(gyroData[2]);
 
 }
+
+
+
 
 const float* GY89::calculateAngles(const float* accelData){
 
@@ -183,14 +190,10 @@ void GY89::rawAccelData(int16_t* accelData){
 void GY89::rawGyroData(int16_t* gyroData){
 
   uint8_t rawData[6];
-  readRegisters(L3GD20H_ADDR, GYRO_XOUT_REG |0x80, 6, rawData);// 0x80 mask indicates data lecture
+  readRegisters(L3GD20H_ADDR, GYRO_XOUT_REG | 0x80, 6, rawData);// 0x80 mask indicates data lecture
   gyroData[0] = (int16_t)(rawData[1] << 8) | rawData[0];
   gyroData[1] = (int16_t)(rawData[3] << 8) | rawData[2];
   gyroData[2] = (int16_t)(rawData[5] << 8) | rawData[4];
-
-  gyroData[0] = gyroData[0] * gyroLSB;
-  gyroData[1] = gyroData[1] * gyroLSB;
-  gyroData[2] = gyroData[2] * gyroLSB;
 }
 
 
@@ -200,13 +203,4 @@ void GY89::rawMagData(int16_t* magData){
   magData[0] = (int16_t)(rawData[1] << 8) | rawData[0];     //mX
   magData[1] = (int16_t)(rawData[3] << 8) | rawData[2];     //mY
   magData[2] = (int16_t)(rawData[5] << 8) | rawData[4];     //mZ
-
-  magData[0] = magData[0] * magLSB;
-  magData[1] = magData[1] * magLSB;
-  magData[2] = magData[2] * magLSB;
-  magData[3] = (atan2(magData[1],magData[0]) * (180/PI)) + MED_MAG_DECLINATION;   //direction of the geographic north pole
-  if (magData[3] > 360){
-    magData[3] = magData[3] + 360;
-  }
-  
 }

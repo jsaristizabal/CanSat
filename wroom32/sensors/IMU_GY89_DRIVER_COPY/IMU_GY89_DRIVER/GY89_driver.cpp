@@ -98,9 +98,9 @@ void GY89::getAccel(float accelData[3]){
   accelData[1] = (int16_t)(rawData[3] << 8) | rawData[2];
   accelData[2] = (int16_t)(rawData[5] << 8) | rawData[4];
 
-  accelData[0] = accelData[0] * accelLSB;
-  accelData[1] = accelData[1] * accelLSB;
-  accelData[2] = accelData[2] * accelLSB;
+  // accelData[0] = accelData[0] * accelLSB;
+  // accelData[1] = accelData[1] * accelLSB;
+  // accelData[2] = accelData[2] * accelLSB;
 }
 
 void GY89::getMag(float magData[4]){

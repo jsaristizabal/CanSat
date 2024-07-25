@@ -5,8 +5,10 @@
 GY89 imu;
 
 //float accelData[3],gyroData[3],magData[4];
-const float* anglesData;
-const float* accelData;
+const float* angleData;
+const float* accData;
+const float* magnData;
+const float* gyrData;
 
 
 
@@ -18,34 +20,35 @@ void setup() {
 }
 
 void loop() {
-  accelData = imu.getAccel();
-  anglesData = imu.calculateAngles(accelData);
-
+  accData = imu.getAccel();
+  magnData = imu.getMag();
+  //angleData = imu.calculateAngles(accData);
+  imu.getGyro();
+  /*
   Serial.println();
   Serial.print("Roll angle: ");
-  Serial.print(anglesData[0]);
+  Serial.print(angleData[0]);
   Serial.print("°, Pitch angle: ");
-  Serial.print(anglesData[1]);
+  Serial.print(angleData[1]);
   Serial.print("°, Yaw angle: ");
-  Serial.print(anglesData[2]);
+  Serial.print(angleData[2]);
   Serial.print("°");
+  */
 
   /*
   Serial.println();
   Serial.print("aX: ");
-  Serial.print(accelData[0]);
+  Serial.print(gyrData[0]);
   Serial.print("(g)");
   Serial.print("\t aY: ");
-  Serial.print(accelData[1]);
+  Serial.print(gyrData[1]);
   Serial.print("(g)");
   Serial.print("\t aZ: ");
-  Serial.print(accelData[2]);
+  Serial.print(gyrData[2]);
   Serial.println("(g)");
   */
-
-
   // Serial.print("Geografico: ");
-  // Serial.print(magData[3]);
+  // Serial.print(magnData[3]);
 
   delay(250);
   
