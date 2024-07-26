@@ -77,12 +77,19 @@ class GY89 {
     void begin();
     const float* getAccel();
     const float* getMag();
-    void getGyro();
+    const float* getGyro();
+    const float* getGyroIntegral();
     const float* calculateAngles(const float* accelData);
 
     void printAccel();
     void printMag();
     void printGyro();
+
+    void printAngleSum();
+    void printAll();
+
+
+    void calibrationStatic();
 
 
 
@@ -97,10 +104,13 @@ class GY89 {
     float accelData[3]; // Arreglo estático miembro de la clase
     float gyroData[3]; // Arreglo estático miembro de la clase
     float magData[3];
-    float adjGyroData[3]; // Arreglo estático miembro de la clase
+    
+  
+    float anglesIntegral[3]; // Arreglo estático miembro de la clase
     float anglesData[3]; // Arreglo estático miembro de la clase
     float tempData; // Arreglo estático miembro de la clase
-    float rateCalibrationArray[3] = {0.0f,0.0f,0.0f}; // Arreglo estático miembro de la clase
+    
+    float CalibrationArray[3] = {0.0f,0.0f,0.0f}; // Arreglo estático miembro de la clase
     void rawAccelData(int16_t* accelData);
     void rawGyroData(int16_t* gyroData);
     void rawMagData(int16_t* magData);

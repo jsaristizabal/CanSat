@@ -10,6 +10,9 @@ const float* accData;
 const float* magnData;
 const float* gyrData;
 
+unsigned long previousMilis = 0;
+const long interval = 100;
+float yaw = 0;
 
 
 void setup() {
@@ -20,10 +23,30 @@ void setup() {
 }
 
 void loop() {
-  accData = imu.getAccel();
-  magnData = imu.getMag();
-  //angleData = imu.calculateAngles(accData);
-  imu.getGyro();
+  unsigned long currentMillis = millis();
+
+
+  //accData = imu.getAccel();
+  //magnData = imu.getMag();
+
+  Serial.println("\n");
+  //imu.printAccel();
+  //imu.printGyro();
+  //imu.printMag();
+
+  
+  
+  angleData = imu.getGyroIntegral();
+
+
+  Serial.println();
+  Serial.print("Roll angle: ");
+  Serial.print(angleData[0]);
+  Serial.print("°, Pitch angle: ");
+  Serial.print(angleData[1]);
+  Serial.print("°, Yaw angle: ");
+  Serial.print(angleData[2]);
+  Serial.print("°");
   /*
   Serial.println();
   Serial.print("Roll angle: ");
@@ -37,19 +60,19 @@ void loop() {
 
   /*
   Serial.println();
-  Serial.print("aX: ");
-  Serial.print(gyrData[0]);
-  Serial.print("(g)");
-  Serial.print("\t aY: ");
-  Serial.print(gyrData[1]);
-  Serial.print("(g)");
-  Serial.print("\t aZ: ");
-  Serial.print(gyrData[2]);
-  Serial.println("(g)");
-  */
-  // Serial.print("Geografico: ");
-  // Serial.print(magnData[3]);
+  Serial.print("mX: ");
+  Serial.print(magnData[0]);
+  Serial.print("(gauss)");
+  Serial.print("\t mY: ");
+  Serial.print(magnData[1]);
+  Serial.print("(gauss)");
+  Serial.print("\t mZ: ");
+  Serial.print(magnData[2]);
+  Serial.println("(gauss)");
 
+  Serial.print("Geografico: ");
+  Serial.print(magnData[3]);
+  */
   delay(250);
   
 

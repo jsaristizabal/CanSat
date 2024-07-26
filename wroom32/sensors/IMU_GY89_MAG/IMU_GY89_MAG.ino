@@ -41,8 +41,8 @@ void setup() {
 }
 
 void loop() {
-  getAccelData();
-  //getMagData();
+  //getAccelData();
+  getMagData();
   delay(250);
 }
 
